@@ -3,7 +3,7 @@ from telebot import types, TeleBot
 from datetime import datetime
 import requests
 
-token = ''
+token = 'Your_token'
 bot: TeleBot = telebot.TeleBot(token)
 
 @bot.message_handler(commands=['start'])
@@ -50,7 +50,7 @@ def help(message):
 @bot.message_handler(commands=["discord"])
 def url(message):
     url = types.InlineKeyboardMarkup()
-    btn3 = types.InlineKeyboardButton("My discord channel!", url="")
+    btn3 = types.InlineKeyboardButton("My discord channel!", url="Your_discord_channel")
     url.add(btn3)
     bot.send_message(message.chat.id, text="Thank you for supporting us!".format(message.from_user), reply_markup=url)
 
