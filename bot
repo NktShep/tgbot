@@ -1,0 +1,205 @@
+import telebot
+from telebot import types, TeleBot
+from datetime import datetime
+import requests
+
+token = '6731830748:AAFpNs5VXvCcL6stosIehsvMF8WVISIJBP0'
+bot: TeleBot = telebot.TeleBot(token)
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    btn1 = types.KeyboardButton("👋 Hello!")
+    btn2 = types.KeyboardButton("❓ Ask a question")
+    btn = types.KeyboardButton("🗒 Help")
+    btn3 = types.KeyboardButton("♪ Music")
+    btn4 = types.KeyboardButton("☁ Weather")
+    markup.add(btn1, btn2, btn, btn3, btn4)
+    bot.send_message(message.chat.id, text="Hello, {0.first_name}! How can I help? ".format(message.from_user), reply_markup=markup)
+
+@bot.message_handler(commands=["weather"])
+def fucc(message):
+    a = bot.reply_to(message, """Enter your city""")
+    bot.register_next_step_handler(a, weather)
+
+def weather(message):
+    city = message.text
+    url = 'https://api.openweathermap.org/data/2.5/weather?q='+city+'&units=metric&lang=ru&appid=79d1ca96933b0328e1c7e3e7a26cb347'
+    weather_data = requests.get(url).json()
+    temperature = round(weather_data['main']['temp'])
+    temperature_feels = round(weather_data['main']['feels_like'])
+    w_now = 'Now in the city - ' + city + ' ' + str(temperature) + ' °C'
+    w_feels = 'Feels like ' + str(temperature_feels) + ' °C'
+    bot.send_message(message.from_user.id, w_now)
+    bot.send_message(message.from_user.id, w_feels)
+    wind_speed = round(weather_data['wind']['speed'])
+    if wind_speed < 5:
+        bot.send_message(message.from_user.id, '✅ The weather is great, there is almost no wind.')
+    elif wind_speed < 10:
+        bot.send_message(message.from_user.id, "🤔 It's windy outside, get dressed a little warmer.")
+    elif wind_speed < 20:
+        bot.send_message(message.from_user.id, '❗️ The wind is very strong, be careful when leaving the house')
+    else:
+        bot.send_message(message.from_user.id, "❌ There's a storm outside, it's better not to go outside")
+
+
+@bot.message_handler(commands=['help'])
+def help(message):
+    bot.send_message(message.chat.id, text="Commands: \n♡ /start - start bot\n⌕ /help - support\n⌕ /discord - my discord channel\n☁ /weather - you can find out the weather in your city")
+
+@bot.message_handler(commands=["discord"])
+def url(message):
+    url = types.InlineKeyboardMarkup()
+    btn3 = types.InlineKeyboardButton("My discord channel!", url="https://discord.gg/gxGxg2Mb")
+    url.add(btn3)
+    bot.send_message(message.chat.id, text="Thank you for supporting us!".format(message.from_user), reply_markup=url)
+
+@bot.message_handler(content_types=['text'])
+def func(message):
+    if (message.text == "👋 Hello!"):
+        bot.send_message(message.chat.id, text="Hello!, I am very glad that you are using this bot!)")
+
+    elif (message.text == "🗒 Help"):
+        bot.send_message(message.chat.id, text="Commands: \n♡ /start - start bot\n⌕ /help - support\n⌕ /discord - my discord channel \n☁ /weather - you can find out the weather in your city ")
+
+    elif (message.text == "☁ Weather"):
+        murkup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn = types.KeyboardButton("Sochi")
+        btn1 = types.KeyboardButton("Moscow")
+        btn3 = types.KeyboardButton("Saint Petersburg")
+        exit = types.KeyboardButton("Return to the main menu.")
+        murkup.add(btn, btn1, btn3, exit)
+        bot.send_message(message.chat.id, text="Сhoose a city.", reply_markup=murkup)
+
+    elif (message.text == "Sochi"):
+        city = "Sochi"
+        url = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&units=metric&lang=ru&appid=79d1ca96933b0328e1c7e3e7a26cb347'
+        weather_data = requests.get(url).json()
+        temperature = round(weather_data['main']['temp'])
+        temperature_feels = round(weather_data['main']['feels_like'])
+        w_now = 'Now in the city - ' + city + ' ' + str(temperature) + ' °C'
+        w_feels = 'Feels like ' + str(temperature_feels) + ' °C'
+        bot.send_message(message.from_user.id, w_now)
+        bot.send_message(message.from_user.id, w_feels)
+        wind_speed = round(weather_data['wind']['speed'])
+        if wind_speed < 5:
+            bot.send_message(message.from_user.id, '✅ The weather is great, there is almost no wind.')
+        elif wind_speed < 10:
+            bot.send_message(message.from_user.id, "🤔 It's windy outside, get dressed a little warmer.")
+        elif wind_speed < 20:
+            bot.send_message(message.from_user.id, '❗️ The wind is very strong, be careful when leaving the house')
+        else:
+            bot.send_message(message.from_user.id, "❌ There's a storm outside, it's better not to go outside")
+    elif (message.text == "Moscow"):
+        city = "Moscow"
+        url = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&units=metric&lang=ru&appid=79d1ca96933b0328e1c7e3e7a26cb347'
+        weather_data = requests.get(url).json()
+        temperature = round(weather_data['main']['temp'])
+        temperature_feels = round(weather_data['main']['feels_like'])
+        w_now = 'Now in the city - ' + city + ' ' + str(temperature) + ' °C'
+        w_feels = 'Feels like ' + str(temperature_feels) + ' °C'
+        bot.send_message(message.from_user.id, w_now)
+        bot.send_message(message.from_user.id, w_feels)
+        wind_speed = round(weather_data['wind']['speed'])
+        if wind_speed < 5:
+            bot.send_message(message.from_user.id, '✅ The weather is great, there is almost no wind.')
+        elif wind_speed < 10:
+            bot.send_message(message.from_user.id, "🤔 It's windy outside, get dressed a little warmer.")
+        elif wind_speed < 20:
+            bot.send_message(message.from_user.id, '❗️ The wind is very strong, be careful when leaving the house')
+        else:
+            bot.send_message(message.from_user.id, "❌ There's a storm outside, it's better not to go outside")
+    elif (message.text == "Saint Petersburg"):
+        city = "Saint Petersburg"
+        url = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&units=metric&lang=ru&appid=79d1ca96933b0328e1c7e3e7a26cb347'
+        weather_data = requests.get(url).json()
+        temperature = round(weather_data['main']['temp'])
+        temperature_feels = round(weather_data['main']['feels_like'])
+        w_now = 'Now in the city - ' + city + ' ' + str(temperature) + ' °C'
+        w_feels = 'Feels like ' + str(temperature_feels) + ' °C'
+        bot.send_message(message.from_user.id, w_now)
+        bot.send_message(message.from_user.id, w_feels)
+        wind_speed = round(weather_data['wind']['speed'])
+        if wind_speed < 5:
+            bot.send_message(message.from_user.id, '✅ The weather is great, there is almost no wind.')
+        elif wind_speed < 10:
+            bot.send_message(message.from_user.id, "🤔 It's windy outside, get dressed a little warmer.")
+        elif wind_speed < 20:
+            bot.send_message(message.from_user.id, '❗️ The wind is very strong, be careful when leaving the house')
+        else:
+            bot.send_message(message.from_user.id, "❌ There's a storm outside, it's better not to go outside")
+
+    elif message.text == "♪ Music":
+        murkup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn2 = types.KeyboardButton("Lil Beit - Psycho Girl")
+        exit = types.KeyboardButton("Return to the main menu.")
+        nextt = types.KeyboardButton("Next ->")
+        murkup.add(btn2, nextt, exit)
+        bot.send_message(message.chat.id, text="What kind of music do you want to listen to?", reply_markup=murkup)
+    elif (message.text == "Lil Beit - Psycho Girl"):
+        bot.send_message(message.chat.id, text='Uploading music, one second, please')
+        audio = open(r'C:\Users\Nikita\Lil_Beit_-_Psycho_Girl_73324740.mp3', 'rb')
+        bot.send_audio(message.chat.id, audio)
+        audio.close()
+    elif (message.text == "Next ->"):
+        murkup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn = types.KeyboardButton("Liili - Hot (sped up)")
+        back = types.KeyboardButton("Back <-")
+        exit = types.KeyboardButton("Return to the main menu.")
+        murkup.add(btn, back, exit)
+        bot.send_message(message.chat.id, text="Сontinue?", reply_markup=murkup)
+    elif (message.text == "Liili - Hot (sped up)"):
+        bot.send_message(message.chat.id, text='Uploading music, one second, please')
+        audio = open(r'C:\Users\Nikita\Liili_-_Hot_sped_up_75376656.mp3', 'rb')
+        bot.send_audio(message.chat.id, audio)
+        audio.close()
+    elif message.text == "Back <-":
+        murkup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn2 = types.KeyboardButton("Lil Beit - Psycho Girl")
+        exit = types.KeyboardButton("Return to the main menu.")
+        nextt = types.KeyboardButton("Next ->")
+        murkup.add(btn2, nextt, exit)
+        bot.send_message(message.chat.id, text="What kind of music do you want to listen to?", reply_markup=murkup)
+
+    elif (message.text == "❓ Ask a question"):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn1 = types.KeyboardButton("What's your name?")
+        btn2 = types.KeyboardButton("What can you do?")
+        btn3 = types.KeyboardButton("What time is it now?")
+        back = types.KeyboardButton("Return to the main menu.")
+        markup.add(btn1, btn2, btn3, back)
+        bot.send_message(message.chat.id, text="Аsk a question, please! ", reply_markup=markup)
+
+    elif (message.text == "What's your name?"):
+        bot.send_message(message.chat.id, "My name is ignore bot.")
+
+    elif message.text == "What can you do?":
+        bot.send_message(message.chat.id, text="I can say hi to you.")
+
+    elif message.text == "What time is it now?":
+        bot.reply_to(message, text="Moscow Time now: " + str(datetime.now().replace(microsecond=0)))
+
+    elif message.text == "I love you":
+        bot.reply_to(message, text="♥️ I love you too! ♥️")
+
+
+
+    elif (message.text == "Return to the main menu."):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        button1 = types.KeyboardButton("👋 Hello!")
+        button2 = types.KeyboardButton("❓ Ask a question")
+        button3 = types.KeyboardButton("🗒 Help")
+        button4 = types.KeyboardButton("♪ Music")
+        button5 = types.KeyboardButton("☁ Weather")
+        markup.add(button1, button2, button3, button4, button5)
+        bot.send_message(message.chat.id, text="You are back in the main menu.", reply_markup=markup)
+    else:
+        bot.send_message(message.chat.id, text="I haven't been taught how to do it yet.")
+
+
+if __name__ == '__main__':
+    while True:
+        try:
+            bot.polling(none_stop=True, interval=0)
+        except Exception as e:
+            print("triggered")
